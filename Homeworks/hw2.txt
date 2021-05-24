@@ -1,0 +1,232 @@
+\documentclass{article}
+\usepackage[english]{babel} % 'french', 'german', 'spanish', 'danish', etc.
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{txfonts}
+\usepackage{mathdots}
+\usepackage[classicReIm]{kpfonts}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{forest}
+\usepackage{tikz-qtree}
+\usepackage{mathtools}
+
+\begin{document}
+\title{Homework 2 Solutions\\CSI 503 Spring 2021}
+\author{RAHUL BHENJALIA}
+\date{March 8 2021}
+\maketitle
+
+
+
+\section{Problems}
+
+\noindent Note: When solving the problems, you must include your calculation and/or justification that shows how you derived the answers. You will not earn points if you simply provide the final answers without sufficient details.
+
+\begin{enumerate}
+\item  We want to test if there is a repeated number in an array. A naive algorithm for solving the task would take $\Theta$(\textit{n}${}^{2}$). [20pt.]
+
+\begin{enumerate}
+\item  Design a \textit{divide-and-conquer }algorithm for the task that has better time complexity than $\Theta$(\textit{n}${}^{2}$). The main function in your pseudocode must be named Test-Repeat(\textit{A, p, r}). Your function needs to return a boolean value that indicates the existence of a repeated number (true) or not (false). We will initially run Test-Repeat(\textit{A, }1\textit{, n}).
+\noindent \underbar{Hint}: You can rename and update the Merge-Sort algorithm to achieve this (see Section 2.3.1 in the textbook). However, you are not allowed to call an external sorting algorithm from your pseudocode (such a solution will receive no points).
+\\.
+\\.
+\\.
+\\ $ANSWER : 1 (a)$
+
+\begin{verbatim}
+1.	Test-Repeat(A, p, r)
+2.	     if( (r-p) > 0 ) then
+3.	          q =  floor( (p – r)/2 )
+4.	          n1 =  q - p + 1
+5.	          n2 = r-q
+6.	          let L(1 ….n1+1) and R(1 ….n2+1) be new arrays
+7.	          for i=1 to n1 do
+8.	              L[i] = A[p+i-1]
+9.	          for j=1 to n2 do
+10.	              R[i] = A[q+j]
+11.	         if(Test-Repeat(L, p, n1)) then
+12.	              return True
+13.	         if(Test-Repeat(R, n2, q)) then
+14.	              return True
+15.	          i=1
+16.	          j=1
+17.	          k=1
+18.	          while i<n1 and j<n2 do
+19.	              if L[i] = R[i] then
+20.	                  return True
+21.	              if L[i]<R[j] then        
+22.	                  A[k] = L[i]
+23.	                  i=i+1
+24.	              else
+25.	                  A[k] = R[j]
+26.	                  j=j+1
+27.	                  k=k+1
+28.	          while i<n1 do
+29.	              A[k] = L[i]
+30.	              i=i+1
+31.	              k=k+1
+32.	          while j<n2 do
+33.	              A[k] = R[j]
+34.	              j=j+1
+35.	              k=k+1
+36.	    return False
+
+
+\end{verbatim}
+
+\item  Derive the recurrence for your algorithm and determine its asymptotically tight bound in the worst case.
+\\.
+\\ $ANSWER : 1 (b)$
+\\.
+\\.
+\\Since, the algorithm is based on Merge-Sort, we can derive the recurrence relation based on that algorithm:
+\\.
+\\The array is divided in two after every iteration, we can write it as:
+\\.
+\\$T(n) =  T(n/2) + T(n/2) + n$ 
+\\$T(n) =  2T(n/2) + n$
+\\.
+\\Substituting the T(n):
+\\ $T(n) =  2( 2T(n/4) + (n/2)) + n$
+\\ $T(n) =  4T(n/4) + n$
+\\.
+\\From the above equation we can basically formulate a generalized equation based on array length and progression:
+\\.
+\\$T(n) = 2^i T(n/2^i) + in$
+\\.
+\\Now, since we have a base case as n=1, evaluating T(1)
+\\.
+\\ $1 = n/2^i$
+\\ $2^i = n$
+\\ $i = log_2{n}$
+\\.
+\\Now, since we have a value of $i$ we can put the values in original equation we got above and evaluate asymptotically tight bound worst case:
+\\.
+\\ $T(n) = nT(1) + (log_2{n}) n $
+\\ $T(n) = n + nlog_2{n}$
+\\ Hence the asymptotically tight bound for the given algorithm is $O(nlog_2{n})$ which is better than $O(n^2)$
+
+\end{enumerate}
+
+\item  Consider a binary min-heap data structure that supports the Insert and Extract-Min operations. In summary, Insert adds the element at the leftmost available position in the last level of the heap, and performs upward swaps as needed. Extract-Min extracts the root, replaces it with the rightmost element in the last level of the heap, and performs downward swaps as needed. (See Chapter 6 of the textbook if you need a refresher.) Insert and Extract-Min each take \textit{O}(log \textit{n}) in the worst case. [15pt.]
+
+\begin{enumerate}
+\item  Show a \textit{potential }function $\Phi$ that results in an amortized cost of \textit{O}(log \textit{n}) for Insert and \textit{O}(1) for Extract-Min.
+
+\item  Fill out the following table to derive the amortized cost of Insert and Extract-Min based on the potential function. Show your calculations.
+\end{enumerate}
+
+
+\begin{tabular}{|p{1.3in}|p{0.6in}|p{0.3in}|p{0.8in}|} \hline 
+Operation & Actual Cost & $\mathrm{\Delta}$$\Phi$ & Amortized Cost \\ \hline 
+Insert & ? & ? & ? \\ \hline 
+Extract-Min & ? & ? & ? \\ \hline 
+\end{tabular}
+
+\item  In the following randomized function, \textit{A }is the input array with size \textit{n}. Random(\textit{n}) produces a uniformly random number between 1 and \textit{n}.
+
+\begin{enumerate}
+\item  Determine its asymptotic time complexity in the worst case.
+\\.
+\\.
+\\.
+\\ $ANSWER : 3 (a)$
+\\. 
+\\From the algorithm, we can clearly predict that only way this algorithm reaches its worst case time complexity is when $STEP:4$ results in TRUE and $STEPS:5 to 9$ are executed.
+\\.
+\\Let's assume that RANDOM(n) produces $k$ which makes $STEP:4$, TRUE.
+\\.
+\\In that case, (ignoring probabilisitc analysis for now), we can take time cost for $STEP:3$ as $1$
+\\.
+\\For and after $STEP:5$, it would be $n$, since its a for loop from 1 to n
+\\.
+\\Now, for $STEP:7,8,9$, the time cost would be $nlog_2{n}$, since they're inside the for loop and the while loop is iterating over $j$, which given the update condition iterates as $j=1,2,4,8.....$ 
+
+\begin{verbatim}
+1.	function RAND-ALG(A,n):
+2.	    s = A[1]                     COST: 1
+3.	    k=RANDOM(n)                  COST: 1
+4.	    if k<log_2{n} then           COST: 1
+5.	       for i=1 to n do           COST: n
+6.	           j=1                   COST: n
+7.	           while j<n do          COST: n * log_2{n}
+8.	                 s=s+A[i]*A[j]   COST: n * log_2{n}
+9.	                 j=j*2           COST: n * log_2{n}
+
+\end{verbatim}
+
+
+\\.
+\\Total Cost, $T(n) = 3 + 2n + 3nlog_2{n}$
+\\.
+\\ Based on above time cost, we can say that asymptotic time complexity in the worst case for the algorithm is $O(nlog_2{n})$
+
+\item  Using probabilistic analysis, determine its asymptotic time complexity on average.
+
+\\.
+\\ $ANSWER : 3 (b)$
+\\Now, for the given algorithm, the average analysis depends on $STEP:(3)$ and $STEP:(4)$, especially $STEP:(4)$, because if $STEP:(4)$ condition gets TRUE, the worst time case is considered and if its false it goes best which would be just O(1) and at cost $T(n) = 3$.
+\\.
+\\We can test out some iterations to get an idea of what kind probability we can expect based on $n$
+\\.
+\\$log_2(1)=0$  TRUE=1    FALSE=0
+\\         (0), 1
+\\$log_2(2)=1$  TRUE=1/2    FALSE=1/2
+\\         (1), 2
+\\$log_2(3)=1.58$  TRUE=2/3    FALSE=1/3
+\\         1, (1.58), 2, 3
+\\$log_2(4)=2$  TRUE=2/4    FALSE=2/4
+\\         1, 2, (2), 3, 4
+\\$log_2(5)=2.32$  TRUE=2/5    FALSE=3/5
+\\         1, 2, (2.32), 3, 4, 5
+\\$log_2(6)=2.58$  TRUE=2/6    FALSE=4/6
+\\         1, 2, (2.58), 3, 4, 5, 6
+\\$log_2(7)=2.8$  TRUE=2/7    FALSE=5/7
+\\         1, 2, (2.58), 3, 4, 5, 6, 7
+\\$log_2(8)=3$  TRUE=3/8    FALSE=5/8
+\\         1, 2, 3, (3), 4, 5, 6, 7, 8
+\\$log_2(9)=3.16$  TRUE=3/9    FALSE=6/9
+\\         1, 2, 3, (3.16), 4, 5, 6, 7, 8, 9
+\\$log_2(10)=3.32$  TRUE=3/10    FALSE=7/10
+\\         1, 2, 3, (3.16), 4, 5, 6, 7, 8, 9, 10
+\\.
+\\.
+\\Based on above test iterations, we can see a pattern, where the probability of TRUE of $STEP:(4)$ condition to be TRUE is always more than it to be FALSE
+\\.
+\\We can create an arbitrary case where we can take probability of TRUE to be $2/3$ and FALSE to be $1/3$ and do a probabilistic analysis based on that.
+\\.
+\\Hence, the probability of Best-Case time complexity kicking in is $1/3$ and Worst-Case time complexity would be $2/3$
+\\.
+\\$T(n) = 1/3 (Best-Case Time Cost)  + 2/3 (Worst-Case Time Cost)$
+\\.
+\\$T(n) = 1/3 (3)  + 2/3 (3 + 2n + 3nlog_2{n})$
+\\.
+\\$T(n) = 1 + 2 + 4n/3 + 2nlog_2{n}$
+\\.
+\\$T(n) = 3 + 4n/3 + 2nlog_2{n}$
+\\.
+\\Hence, asymptotic time complexity on average for the algorithm would be $\theta(nlog_2{n})$
+
+
+
+
+
+
+\end{enumerate}
+
+
+
+
+\item  Suppose that we have a data structure that holds a list of numbers (internally stored as an array). The data structure only supports the append() operation which by default stores the given number at the end of the array. However, every time that the size of the array including the appended item becomes an exact power of 2 it performs a circular right shift on the whole array (right after storing the appended number at the end of the array). It moves final entry to the first position while shifting all other numbers to the next position.
+
+\begin{enumerate}
+\item  Using the \textit{aggregate analysis }method, show the average cost of each append() operation.
+
+\item  Repeat the above using the \textit{accounting method}. Clearly describe the costs, payments, and credits.
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
+

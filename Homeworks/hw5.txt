@@ -1,0 +1,254 @@
+\documentclass{article}
+\usepackage[english]{babel} % 'french', 'german', 'spanish', 'danish', etc.
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{txfonts}
+\usepackage{mathdots}
+\usepackage[classicReIm]{kpfonts}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{forest}
+\usepackage{tikz-qtree}
+\usepackage{mathtools}
+\usepackage{comment}
+\usetikzlibrary{arrows.meta,automata,positioning}
+
+
+\begin{document}
+\title{Homework 5 Solutions\\CSI 503 Spring 2021}
+\author{RAHUL BHENJALIA}
+\date{May 3 2021}
+\maketitle
+
+\section{Problems}
+\begin{enumerate}
+
+\item Run the Bellman-Ford algorithm on the directed graph of Figure 24.4 in CLRS using vertex
+y as the source. In the following table, show the values of d and $\pi$ after each pass $(d(\pi))$.
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c| } 
+ \hline
+ pass & s &  t & x & y & z \\ 
+ \hline
+ initial & $\infty$(NIL) & $\infty$(NIL) & $\infty$(NIL) & 0 & $\infty$(NIL) \\ 
+ 1 & 11 & -5 & -3 & 0 & -9\\ 
+ 2 & -7 & -5 & -3 & 0 & -9\\ 
+ 3 & -7 & -5 & -3 & 0 & -9\\ 
+ 4 & -7 & -5 & -3 & 0 & -9\\ 
+ \hline
+\end{tabular}
+\end{center}
+
+\\Edge List: (y,x)(y,z)(x,t)(z,s)(z,x)(t,y)(t,z)(t,x)(s,y)(s,t)
+
+
+\item Consider the following system of difference constraints:
+
+$x_{1} - x_{2} \le 1$
+\\$x_{1} - x_{4} \le -4$
+\\$x_{2} - x_{3} \le 2$
+\\$x_{2} - x_{5} \le 7$
+\\$x_{2} - x_{6} \le 5$
+\\$x_{3} - x_{6} \le 10$
+\\$x_{4} - x_{2} \le 2$
+\\$x_{5} - x_{1} \le -1$
+\\$x_{5} - x_{4} \le 3$
+\\$x_{6} - x_{3} \le 8$
+
+\begin{enumerate}
+\item Form and draw the corresponding constraint graph.
+
+ 
+
+\begin{tikzpicture}[
+    > = stealth, % arrow head style
+    shorten > = 1pt, % don't touch arrow head to node
+    auto,
+    node distance = 3cm, % distance between nodes
+    semithick % line style
+    ]
+
+    \tikzset{every state}=[
+    draw = black,
+    thick,
+    fill = white,
+    minimum size = 1mm
+    ]
+
+    \node[state] (x_{4}) {$x_{4}$};
+    \node[state] (x_{5}) [right=of x_{4}] {$x_{5}$};
+    \node[state] (x_{6}) [right=of x_{5}] {$x_{6}$};
+    \node[state] (x_{1}) [above=of x_{4}] {$x_{1}$};
+    \node[state] (x_{2}) [above=of x_{5}] {$x_{2}$};
+    \node[state] (x_{3}) [above=of x_{6}] {$x_{3}$};
+    \node[state] (v_{0}) [left=of x_{1}] {$v_{0}$};
+    
+    \path[->] (v_{0}) edge[bend left]  node[below] {0} (x_{1});
+    \path[->] (v_{0}) edge[bend left]  node[below] {0} (x_{2});
+    \path[->] (v_{0}) edge[bend left]  node[below] {0} (x_{3});
+    \path[->] (v_{0}) edge[bend right]  node[below] {0} (x_{4});
+    \path[->] (v_{0}) edge[]  node[pos=0.25,below] {0} (x_{5});
+    \path[->] (v_{0}) edge[]  node[pos=0.20] {0} (x_{6});
+    
+    \path[->] (x_{1}) edge  node[pos=0.25,above right] {-1} (x_{5});
+    \path[->] (x_{2}) edge  node[above] {1} (x_{1});
+    \path[->] (x_{2}) edge  node[pos=0.25,below right] {2} (x_{4});
+    \path[->] (x_{3}) edge  node[above] {2} (x_{2});
+    \path[->] (x_{3}) edge[bend left]   node[] {8} (x_{6});
+    \path[->] (x_{4}) edge  node[pos=0.25] {-4} (x_{1});
+    \path[->] (x_{4}) edge  node[below] {3} (x_{5});
+    \path[->] (x_{5}) edge  node[right] {7} (x_{2});
+    \path[->] (x_{6}) edge  node[] {5} (x_{2});
+    \path[->] (x_{6}) edge[bend left]   node[] {10} (x_{3});
+    
+\end{tikzpicture}
+
+\item Use the Bellman-Ford algorithm to determine whether the system has a feasible solution or not. Show your calculated shortest paths.
+
+ 
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c|c| } 
+ \hline
+ pass & $v_{0}$ & $x_{1}$ & $x_{2}$ & $x_{3}$ & $x_{4}$ & $x_{5}$ & $x_{6}$ \\ 
+ \hline
+ initial & 0 & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$ & $\infty$\\ 
+ 1 & 0 & -4 & -3 & 0 & 0 & -1 & -8\\
+ 2 & 0 & -4 & -3 & 0 & 0 & -5 & -8\\
+ 3 & 0 & -5 & -3 & 0 & -1 & -5 & -8\\
+ 4 & 0 & -5 & -3 & 0 & -1 & -6 & -8\\
+ 5 & 0 & -5 & -3 & 0 & -1 & -6 & -8\\
+ 6 & 0 & -5 & -3 & 0 & -1 & -6 & -8\\
+ \hline
+\end{tabular}
+\end{center}
+From the table we can conclude that the feasible solution for the problem is (-5,-3,0,-1,-6,-8)
+\end{enumerate}
+
+\item We are interested in maintaining the transitive closure of a directed graph as the graph grows.
+Design an algorithm that can update the transitive closure of a graph in $O(V^{2})$ time when an edge is inserted. You need to write the pseudocode for the following algorithm that takes current graph G, current transitive closure G*, and inserted edge (u, v) as inputs, and returns the updated transitive closure.
+\\\textbf UpdateClosureAfterInsert(G, G*, u, v)
+\\The algorithm below runs by exploring a pair vertices at a time so we can say that time complexity of the algorithm is $O(V^2)$
+\\First the algorithm considers a pair of vertices in the graph G ($a,b$ in this case)and make edges $(u,a)$ and $(v,b)$.  
+\\Then we create a transitive closure for the new graph that contains the new vertices $(u,v)$.
+\\Now, the only way the solution exists is if the transitive closure for the graph contains edges $(u,a)$ and $(v,b)$.  
+\\.
+\\.
+\\ALGORITHM:
+\\UpdateClosureAfterInsert(G, G*, u, v)
+\\1. //Input: A Graph G = (V,E)
+\\2. for every pair (a,b) of vertices in V do
+\\3. Let H = G (copy of original graph)
+\\4. \qquad createEdge-in-H $->$ (u,a)      //append to H graph
+\\5. \qquad createEdge-in-H $->$ (b,v)      //append to H graph
+\\6. \qquad result = CreateTransitiveClosure(H) \\ creating Transitive closure of new graph H which has added edges
+\\8. \qquad if result has edges{(u,a)} and{(b,v)} then do
+\\9. \qquad\qquad return result
+\\10. \qquad else do 
+\\11. \qquad\qquad   return "No Result"
+
+
+\item The Floyd-Warshall algorithm fails (does not work correctly) if the input graph has a negative-weight cycle
+
+\begin{enumerate}
+\item Draw a small graph with a negative-weight cycle. Demonstrate the result of running Floyd-Warshall on it (show $D^{(k)}$ for k = 1, . . . , n).
+
+ 
+
+\begin{center}
+\begin{tikzpicture}[
+    > = stealth, % arrow head style
+    shorten > = 2pt, % don't touch arrow head to node
+    auto,
+    node distance = 5cm, % distance between nodes
+    semithick % line style
+    ]
+
+    \tikzset{every state}=[
+    draw = black,
+    thick,
+    fill = white,
+    minimum size = 1mm
+    ]
+
+    \node[state] (0) {$0$};
+    \node[state] (1) [right=of 0] {$1$};
+    \node[state] (2) [below=of 1] {$2$};
+    \node[state] (3) [left=of 2]{$3$};
+
+    \path[->] (0) edge  node[] {1} (1);
+    \path[->] (1) edge  node[] {-1} (2);
+    \path[->] (2) edge  node[] {-1} (3);
+    \path[->] (3) edge  node[] {-1} (0);
+    
+\end{tikzpicture}
+\end{center}
+
+We can apply the Floyed Warshall algorithm and construct the following table for the given negative weighted graph.
+
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c| } 
+ \hline
+  & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} \\
+  \hline
+ \textbf{0} & -2 & 1 & 0 & -1 \\ 
+ \hline
+ \textbf{1} & -3 & -2 & -1 & -2 \\ 
+  \hline
+ \textbf{2} & -2 & -1 & -2 & -1 \\ 
+  \hline
+ \textbf{3} & -1 & 0 & -1 & -2 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\item In general, how can you use the output of the Floyd-Warshall algorithm to detect the presence of a negative-weight cycle?
+
+First, Since we used a very simple version of the graph, the data we have is little unusual than normal. As we can see in the diagonal of the table above, where distance is -2. So we can conclusively say that if the distance of or from any vertex is negative, we can end up with negative-weighted cycle. 
+
+\end{enumerate}
+
+
+\item  We are given a directed graph G = (V, E) on which each edge (u, v) $\in$ E has an associated value r(u, v), which is a real number in the range 0 $\le$ r(u, v) $\le$ 1 that represents the reliability of a communication channel from vertex u to vertex v. We interpret r(u, v) as the probability that the channel from u to v will not fail, and we assume that these probabilities are independent. Give an efficient algorithm to find the most reliable path between two given vertices.
+
+
+
+\begin{enumerate}
+\item Provide the pseudocode of your algorithm.
+
+ 
+\\We can modify the DIJKSTRA algorithm from the textbook to meet then requirements.
+\\.
+\\.
+\\Most-Reliable-Path(u,v)
+\\1. //Input: A directed Graph G = (V,E)
+\\2. //Output: The most reliable path between two vertices.
+\\3. w(u,v)             //weight of those 2 vertices. 
+\\4. return (1/r(u,v))
+\\5. Dijkstra(G,w,s)
+\\6. \qquad Initialize-Single-Source(G,s)
+\\7. \qquad S $\leftarrow \oslash$ 
+\\8. \qquad Q $\leftarrow$ V[G]
+\\9. \qquad While Q $\neq \oslash$ 
+\\10. \qquad\qquad do u $\leftarrow$ EXTRACT - MIN(Q)     
+\\11. \qquad\qquad\qquad S $\leftarrow$ S $\cup$ \{u\}
+\\12. \qquad\qquad\qquad for each vertex v $\in$ Adj[u]
+\\13. \qquad\qquad\qquad\qquad do Relax(u,v,w)
+\item Show the correctness of your algorithm.
+
+\\ Let's consider we have an input graph G in the form (x,y,w), with $x$ and $y$ are vertices and $w$ is the weight: [(2,1,1),(4,1,-4)(3,2,2)(5,2,7)(6,2,5)(6,3,10)(2,4,2)(1,5,-1)(4,5,3)(3,6,8)]
+\\We have minimum path which is $(2 -> 4 -> 1 -> 5)$ at weight $-3$
+\\THe algorithm returns minimum weight on step 10, which proves that as we go through graph we will have minimum weight return. 
+
+
+\item Analyze the time complexity of your algorithm.
+
+Time complexity : O(E + VlogV)
+
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}

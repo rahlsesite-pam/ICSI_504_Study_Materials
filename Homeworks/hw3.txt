@@ -1,0 +1,303 @@
+\documentclass{article}
+\usepackage[english]{babel} % 'french', 'german', 'spanish', 'danish', etc.
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{txfonts}
+\usepackage{mathdots}
+\usepackage[classicReIm]{kpfonts}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{forest}
+\usepackage{tikz-qtree}
+\usepackage{mathtools}
+
+
+\begin{document}
+\title{Homework 3a Solutions\\CSI 503 Spring 2021}
+\author{Rahul Bhenjalia}
+\date{March 15 2021}
+\maketitle
+
+\section{Problems}
+\begin{enumerate}
+
+
+ \item Every semester you take a set of courses among the remaining courses in your program of study. Suppose that for each remaining course \textit{i}, \textit{c}\textsubscript{\textit{i}} and \textit{v}\textsubscript{\textit{i}} indicate its number of credits and how valuable the course is to your learning goals, respectively. Also, assume that your university only allows you to take up to the total of \textit{M} credits each semester.
+
+\begin{enumerate}
+
+\item Using dynamic programming, write a recursive \ul{top-down} (with memorization) algorithm BestValuePlan(\textit{c}, \textit{v}, \textit{n}, \textit{M} ) that returns maximum total value of courses that you can choose for a semester among the \textit{n} remaining courses. \textit{c} and \textit{v} are arrays of credits and values, respectively. You can define and use auxiliary functions as needed.
+
+\begin{verbatim}
+BestValuePlan(c, v, n, M): 
+   if n=0 or M=0 then
+      return 0
+   if c[n-1] <= M then
+      return MAXIMUM(v[n-1]+BestValuePlan(c,v,n-1,M-c[n-1]),
+		             BestValuePlan(c,v,n-1,M))
+   else
+      return BestValuePlan(c,v,n-1,M)
+\end{verbatim}
+
+\item Write a \ul{bottom-up} (non-recursive) algorithm for the same solution.
+
+\begin{verbatim}
+BestValuePlan(c,v,n,M): 
+    for i=0 to (M+1) do
+        for j=0 to (n+1) do
+            table[i,j]=0
+	for e=0 to (n+1) do
+	    for w=0 to (M+1) do
+		    if i=0 OR w=0 then
+			   table[i,w]=0
+			else if c[i-1]<=w then
+                table[i,w] = MAXIMUM(v[i-1]+table[i-1,w-c[i-1]],table[i-1,w])
+            else
+                table[i,w] = table[i-1,w]	
+    return table[n,M] 
+\end{verbatim}
+
+\item Extend the algorithm in the previous step to print the actual solution (set of courses).
+
+\begin{verbatim}
+BestValuePlan(c,v,n,M): 
+	for i=0 to (M+1) do
+	    for j=0 to (n+1) do
+		    table[i,j]=0
+			
+	for e=0 to (n+1) do
+	    for w=0 to (M+1) do
+		    if i=0 OR w=0 then
+			   table[i,w]=0
+		    else if c[i-1]<=w then
+                table[i,w]=MAXIMUM(v[i-1]+table[i-1,w- c[i-1]], table[i-1, w])
+            else
+                table[i,w]=table[i-1,w]	
+    s=table[n,M]
+	print(s)
+	//Printing set of courses
+	u=M
+	for i=n down-to 0 do
+		if s<=0 then
+			break
+		if s=table[i-1,u] then
+            break
+        else  
+            print(c[i-1])
+            s=s-v[i-1]
+            u=u-c[i-1]	
+\end{verbatim}
+
+\item Draw the subproblem graph for your solution, and analyze its time complexity accordingly.
+
+\\Let's take an example for drawing a tree
+\\.
+\\Credits of each course, $c = [1, 1, 1]$
+\\.
+\\Value of each course, $c = [10, 20, 30]$
+\\.
+\\Maximum credits you can take $M = 2$
+
+\begin{tikzpicture}[very thick,level/.style={sibling distance=60mm/#1}]
+\node [vertex] (r){$K(n,M)=K(3,2)$}
+  child {
+    node [vertex] (a) {$K(2,2)$}
+    child {
+      node [vertex] {$K(1,2)$}
+      child { node [vertex] {$K(0,2)$}  }
+      child {node [vertex] {$K(0,1)$}}
+    }
+    child {
+      node [vertex] {$K(1,1)$}
+      child {node [vertex] {$K(0,1)$}}
+      child {node [vertex] {$K(0,0)$}}
+    }
+  }
+  child {
+    node [vertex] {$K(2,1)$}
+    child {
+      node [vertex] {$K(1,1)$}
+      child {node [vertex] {$K(0,1)$}}
+    }
+    child {
+      node [vertex] {$K(1,0)$}
+      child {node [vertex] {$K(0,0)$}}
+    }
+  };
+\end{tikzpicture}
+
+\\.
+\\Considering the above algorithm in part(c), each sub-problem is redundant, the time-complexity of the algorithm is $O(2^n)$
+
+
+\end{enumerate}
+
+
+\item Make sure that you have read and understood the Huffman coding in Section 16.3 in CLRS.\label{mark-2.}
+
+\begin{enumerate}
+
+
+\item Use algorithm Huffman() on Page 431 of CLRS to write an optimal Huffman code for the following set of frequencies, based on the first 8 Fibonacci numbers (a: 1, b: 1, c: 2, d: 3, e: 5, f: 8, g: 13, h: 21). Show a step-by-step construction of the tree.
+
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[2,red 
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}] 
+]
+\end{forest}
+\\.
+\\.
+\\.
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[4,red
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}] 
+    ]
+]
+\end{forest}
+\\.
+\\.
+\\.
+
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[7, red
+[{d=3}, edge label={node[midway,left]{0}} ]
+[4, edge label={node[midway,right]{1}}
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}]]
+]]
+\end{forest}
+\\.
+\\.
+\\.
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[12,red
+[{e=5}, edge label={node[midway,left]{0}}]
+[7, edge label={node[midway,right]{1}}
+[{d=3}, edge label={node[midway,left]{0}} ]
+[4, edge label={node[midway,right]{1}}
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}]]
+]]]
+\end{forest}
+\\.
+\\.
+\\.
+
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[20,red
+[{f=8}, , edge label={node[midway,left]{0}}]
+[12, edge label={node[midway,right]{1}}
+[{e=5}, edge label={node[midway,left]{0}}]
+[7, edge label={node[midway,right]{1}}
+[{d=3}, edge label={node[midway,left]{0}} ]
+[4, edge label={node[midway,right]{1}}
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}]]
+]]]]
+\end{forest}
+
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[33, red
+[{g=13}, edge label={node[midway,left]{0}}]
+[20, edge label={node[midway,right]{1}}
+[{f=8}, edge label={node[midway,left]{0}}]
+[12, edge label={node[midway,right]{1}}
+[{e=5}, edge label={node[midway,left]{0}}]
+[7, edge label={node[midway,right]{1}}
+[{d=3}, edge label={node[midway,left]{0}} ]
+[4, edge label={node[midway,right]{1}}
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}]]
+]]]]]
+\end{forest}
+\\.
+\\.
+\begin{forest}
+for tree={circle,draw, l sep=20pt}
+[54, red
+[{h=21}, edge label={node[midway,left]{0}}]
+[33, edge label={node[midway,right]{1}}
+[{g=13}, edge label={node[midway,left]{0}}]
+[20, edge label={node[midway,right]{1}}
+[{f=8}, edge label={node[midway,left]{0}}]
+[12, edge label={node[midway,right]{1}}
+[{e=5}, edge label={node[midway,left]{0}}]
+[7, edge label={node[midway,right]{1}}
+[{d=3}, edge label={node[midway,left]{0}} ]
+[4, edge label={node[midway,right]{1}}
+   [{c=2}, edge label={node[midway,left]{0}}]
+   [2, edge label={node[midway,right]{1}}
+    [{a=1},edge label={node[midway,left] {0}}]
+    [{b=1},edge label={node[midway,right] {1}}]]
+]]]]]]
+\end{forest}
+
+\\.
+\\.
+\\.
+\\Huffman codes are as follows:
+\\.
+\\$a=1111111$
+\\$b=1111110$
+\\$c=111110$
+\\$d=11110$
+\\$e=1110$
+\\$f=110$
+\\$g=10$
+\\$h=0$
+\\.
+\\.
+\\.
+\item \so{Generalize your answer to find the optimal code when the frequencies are the first} \textit{n}
+
+Fibonacci numbers. Justify your answer.
+
+\\.
+\\As mentioned, the tree is just a long limb with $n$ leaves just hanging.
+\\The recurrence in Fibonacci series implies:
+\\$F_{n+2} = \sum_{i=0}^{n} F_i +1 $
+\\.
+\\As mentioned, the tree is just a long limb with $n$ leaves just hanging.
+\\The recurrence in Fibonacci series implies:
+\\$F_{n+2} = \sum_{i=0}^{n} F_i +1 $
+
+\\We can prove the given equation but INDUCTION.
+\\.
+\\For base case: $1,1,2,3$ provide sufficient result.
+\\.
+\\We assume that the equality holds for all Fibonacci numbers smaller than $F_{n+2}$
+\\.
+\\Hence we prove correctness for $F_{n+2}$:
+\\.
+\\$F_{n+2} = F_{n+1} + F_{n} = \sum_{i=0}^{n-1} F_i + 1 + F_{n} = \sum_{i=0}^{n} F_i +1$
+\\.
+\\.
+\\We can conclude that $F_{n+2} < \sum_{i=0}^{n-1} F_i + 1$
+\\.
+\\Which clearly say $F_{n+2} < F_{n+1}$ 
+\\.
+\\Hence, our generalized equation holds.
+
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
